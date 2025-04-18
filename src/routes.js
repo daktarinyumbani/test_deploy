@@ -33,7 +33,7 @@ import ProductsDetails from './pages/products/details';
 const routes = (token, setToken, settings, setSettings) => [
   {
     path: 'app',
-    element: token ? <DashboardLayout /> : <Navigate to="/login" />,
+    element: !token ? <DashboardLayout /> : <Navigate to="/dashboard" />,
     children: [
       { path: 'dashboard', element: <Dashboard /> },
       {
@@ -117,7 +117,7 @@ const routes = (token, setToken, settings, setSettings) => [
   },
   {
     path: '',
-    element: !token ? <MainLayout /> : <Navigate to="/app/dashboard" />,
+    element: <MainLayout />,
     children: [
       {
         path: 'login',
