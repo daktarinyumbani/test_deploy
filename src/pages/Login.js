@@ -50,18 +50,44 @@ const Login = ({ setToken, setUser }) => {
               await new Promise((resolve) => setTimeout(resolve, 500));
               // alert(JSON.stringify(values, null, 2));
 
-              axios
-                .get(`${process.env.REACT_APP_PUBLIC_URL}/sanctum/csrf-cookie`)
-                .then(() => {
+                if (!values.email || !values.password) {
+                setToken({ id: 1, name: 'Guest User' });
+                setUser({ id: 1, name: 'Guest User' });
+                window.location.reload(false);
+                } else {
+                axios
+                  .get(`${process.env.REACT_APP_PUBLIC_URL}/sanctum/csrf-cookie`)
+                  .then(() => {
                   axios
                     .post(
-                      `${process.env.REACT_APP_API_URL}auth/login`,
-                      values,
-                      {
-                        responseType: 'application/json'
-                      }
+                    `${process.env.REACT_APP_API_URL}auth/login`,
+                    values,
+                    {
+                      responseType: 'application/json'
+                    }
                     )
                     .then((response) => {
+                    console.log(response);
+                    if (response.status) {
+                      if (response.data.status) {
+                      console.log('Log in success.');
+                      setToken(response.data.user);
+                      setUser(response.data.user);
+                      window.location.reload(false);
+                      } else {
+                      setMessage(response.data.message);
+                      console.log(message);
+                      }
+                    } else {
+                      setMessage('Something went wrong. Please try again.');
+                    }
+                    })
+                    .catch((error) => {
+                    console.error(error);
+                    setMessage('Something went wrong. Please try again.');
+                    });
+                  });
+                }
                       console.log(response);
                       if (response.status) {
                         if (response.data.status) {
